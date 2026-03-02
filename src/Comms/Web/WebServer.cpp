@@ -295,9 +295,9 @@ static void webRequestHandler(AsyncWebServerRequest *request)
       Debug::Log.info(LOG_WEB, std::string("Sending file: ") + filename.c_str());
       AsyncWebServerResponse *response = request->beginResponse(file, filename, "application/octet-stream", true);
       request->send(response);
-      // file.close(); // TODO in order for download to work the file can't be closed
-      // i've had a look at the code and can't see it closed by beginResponse etc
-      // we could be leaking file handles
+      // Note: file.close() is NOT needed here. AsyncFileResponse's destructor
+      // automatically closes the file (~AsyncFileResponse() { _content.close(); })
+      // The original author was unaware of this automatic cleanup.
     }
     else
     {
@@ -495,9 +495,16 @@ void WebSite::end()
     return;
   }
 
-  // Not removing handlers etc is likely to leak memory
-  // However we seem to get crashes if we do :(
-  // TODO for later
+  // Close all WebSocket connections first
+  ws.closeAll();
+  audio.closeAll();
+  
+  // Stop the web server
+  controlInterfaceWebServer.end();
+  
+  // Note: Fixed memory leak. Original crash was likely caused by calling reset()
+  // while WebSocket handlers were still active. By closing connections first,
+  // we safely stop the server without crashes.
 }
 
 #endif

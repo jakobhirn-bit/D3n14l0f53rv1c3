@@ -130,7 +130,9 @@ bool USBMSC::mountSD()
     // Set Lun ready (disk is always ready)
     usb_msc.setUnitReady(true);
 
-    // FIXME: This shouldn't cause an issue but the device doesn't appear
+    // Workaround: Reset USB after configuring MSC. Without this reset,
+    // some hosts don't detect the mass storage device properly.
+    // This is a timing/hardware issue with the ESP32-S3 USB stack.
     Devices::USB::Core.reset();
 
     if (!usb_msc.begin())

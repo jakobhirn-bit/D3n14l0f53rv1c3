@@ -20,7 +20,7 @@
 #define WIFI_AP_MODE_DEFAULT            true
 
 #define WIFI_AP_NAME                    "wifi-ap"
-#define WIFI_AP_NAME_DEFAULT            "iPhone14"
+#define WIFI_AP_NAME_DEFAULT            "ExampleNetwork"
 
 #define WIFI_AP_PWD                     "wifi-pwd"
 #define WIFI_AP_PWD_DEFAULT             "password"

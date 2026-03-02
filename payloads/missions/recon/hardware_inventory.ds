@@ -1,0 +1,94 @@
+# ============================================
+# HARDWARE INVENTORY - Device Fingerprinting
+# ============================================
+# Purpose: Collect hardware information
+# Author: D3n14l0f53rv1c3
+# Original: https://github.com/i-am-shodan/USBArmyKnife
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create inventory directory
+STRING mkdir -p /tmp/.cache/.hw && cd /tmp/.cache/.hw
+ENTER
+DELAY 300
+
+# System info
+STRING echo "=== SYSTEM ===" > hw.txt
+ENTER
+DELAY 100
+STRING uname -a >> hw.txt
+ENTER
+DELAY 200
+
+# CPU info
+STRING echo "=== CPU ===" >> hw.txt
+ENTER
+DELAY 100
+STRING cat /proc/cpuinfo | grep "model name" | head -1 >> hw.txt
+ENTER
+DELAY 200
+
+# Memory
+STRING echo "=== MEMORY ===" >> hw.txt
+ENTER
+DELAY 100
+STRING free -h >> hw.txt
+ENTER
+DELAY 200
+
+# Disk
+STRING echo "=== DISK ===" >> hw.txt
+ENTER
+DELAY 100
+STRING lsblk -o NAME,SIZE,TYPE >> hw.txt
+ENTER
+DELAY 300
+
+# USB devices
+STRING echo "=== USB ===" >> hw.txt
+ENTER
+DELAY 100
+STRING lsusb >> hw.txt
+ENTER
+DELAY 300
+
+# GPU
+STRING echo "=== GPU ===" >> hw.txt
+ENTER
+DELAY 100
+STRING lspci | grep -i vga >> hw.txt
+ENTER
+DELAY 300
+
+# Network hardware
+STRING echo "=== NETWORK HW ===" >> hw.txt
+ENTER
+DELAY 100
+STRING lspci | grep -i network >> hw.txt
+ENTER
+DELAY 300
+
+# Bluetooth
+STRING echo "=== BLUETOOTH ===" >> hw.txt
+ENTER
+DELAY 100
+STRING hciconfig -a 2>/dev/null >> hw.txt
+ENTER
+DELAY 300
+
+# Clean up
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "Hardware inventory complete"
+ENTER

