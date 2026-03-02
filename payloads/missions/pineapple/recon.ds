@@ -1,0 +1,31 @@
+# ============================================
+# PINEAPPLE WIFI RECON - Comprehensive Scan
+# ============================================
+# Purpose: Full WiFi reconnaissance
+# Device: Pineapple Pager
+# Time: 60 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+# Set wlan1 to monitor mode
+ifconfig wlan1 down
+iwconfig wlan1 mode monitor
+ifconfig wlan1 up
+
+# Channel hop for 60 seconds
+for chan in 1 6 11 36 44 52 100 149 157; do
+    iwconfig wlan1 channel $chan
+    sleep 6
+done &
+
+# Capture all data
+airodump-ng wlan1 -w /pineapple/captures/recon_$(date +%Y%m%d_%H%M%S) --output-format pcap
+
+# Parse results
+echo "=== RECON RESULTS ===" > /pineapple/captures/summary.txt
+echo "Date: $(date)" >> /pineapple/captures/summary.txt
+echo "" >> /pineapple/captures/summary.txt
+echo "Access Points:" >> /pineapple/captures/summary.txt
+grep -o "([0-9A-Fa-f]\{2}:)\{5\}[0-9A-Fa-f]\{2\}" /pineapple/captures/*.csv | sort -u | wc -l >> /pineapple/captures/summary.txt
+
+echo "✅ Recon complete"

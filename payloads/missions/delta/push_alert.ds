@@ -1,0 +1,29 @@
+# ============================================
+# DELTA PUSH ALERT - Notification System
+# ============================================
+# Purpose: Send push notification to mobile
+# Device: OnePlus 6 (Delta)
+# Time: Instant
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+# Check for Termux
+STRING if command -v termux-notification &> /dev/null; then
+ENTER
+STRING   termux-notification --title "SECURITY ALERT" --content "Recon complete. Check ~/recon.txt"
+ENTER
+STRING else
+ENTER
+STRING   echo "$(date): ALERT - Recon complete" >> ~/alerts.log
+ENTER
+STRING fi
+ENTER
+DELAY 200
+
+STRING history -c; exit
+ENTER

@@ -1,0 +1,52 @@
+# ============================================
+# GAMMA BLUETOOTH RECON - Device Discovery
+# ============================================
+# Purpose: Discover Bluetooth devices
+# Device: Hackberry Pi CM5 (Gamma)
+# Interface: hci0
+# Time: 30 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+# Enable Bluetooth
+STRING sudo hciconfig hci0 up
+ENTER
+DELAY 200
+STRING sudo hciconfig hci0 piscan
+ENTER
+DELAY 500
+
+# Scan for devices
+STRING mkdir -p ~/captures
+ENTER
+DELAY 100
+
+STRING echo "=== BLUETOOTH SCAN $(date) ===" > ~/captures/bt_scan.txt
+ENTER
+DELAY 100
+
+STRING timeout 30 sudo hcitool scan >> ~/captures/bt_scan.txt
+ENTER
+DELAY 32000
+
+# BLE scan
+STRING echo "=== BLE DEVICES ===" >> ~/captures/bt_scan.txt
+ENTER
+DELAY 100
+
+STRING timeout 10 sudo hcitool lescan >> ~/captures/bt_scan.txt 2>&1
+ENTER
+DELAY 12000
+
+# Parse results
+STRING cat ~/captures/bt_scan.txt
+ENTER
+DELAY 200
+
+STRING history -c; clear
+ENTER

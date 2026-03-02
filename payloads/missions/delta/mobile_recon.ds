@@ -1,0 +1,61 @@
+# ============================================
+# DELTA MOBILE RECON - Efficient Scanning
+# ============================================
+# Purpose: Battery-efficient reconnaissance
+# Device: OnePlus 6 (Delta)
+# Time: 60 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+# Quick WiFi scan (battery efficient)
+STRING echo "=== WIFI SCAN $(date) ===" > ~/recon.txt
+ENTER
+DELAY 100
+
+STRING sudo iw dev wlan0 scan | grep "SSID:" | sort -u >> ~/recon.txt
+ENTER
+DELAY 5000
+
+# Bluetooth scan
+STRING echo "=== BT SCAN ===" >> ~/recon.txt
+ENTER
+DELAY 100
+
+STRING sudo hciconfig hci0 up 2>/dev/null
+ENTER
+DELAY 200
+
+STRING timeout 10 sudo hcitool scan >> ~/recon.txt 2>/dev/null
+ENTER
+DELAY 12000
+
+# Network interfaces
+STRING echo "=== NETWORK ===" >> ~/recon.txt
+ENTER
+DELAY 100
+
+STRING ip addr show | grep "inet " >> ~/recon.txt
+ENTER
+DELAY 200
+
+# Battery check
+STRING echo "=== BATTERY ===" >> ~/recon.txt
+ENTER
+DELAY 100
+
+STRING cat /sys/class/power_supply/battery/capacity >> ~/recon.txt 2>/dev/null || echo "N/A" >> ~/recon.txt
+ENTER
+DELAY 100
+
+# Results
+STRING cat ~/recon.txt
+ENTER
+DELAY 200
+
+STRING history -c; exit
+ENTER
