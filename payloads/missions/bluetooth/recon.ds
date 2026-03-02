@@ -1,0 +1,100 @@
+# ============================================
+# BLUETOOTH RECON - Bluetooth Device Discovery
+# ============================================
+# Purpose: Discover and fingerprint Bluetooth devices
+# Author: D3n14l0f53rv1c3
+# Requires: Bluetooth adapter
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create working directory
+STRING mkdir -p /tmp/.bt && cd /tmp/.bt
+ENTER
+DELAY 300
+
+# Enable Bluetooth
+STRING echo "=== ENABLE BLUETOOTH ==="
+ENTER
+DELAY 100
+STRING sudo systemctl start bluetooth
+ENTER
+DELAY 1000
+STRING sudo hciconfig hci0 up
+ENTER
+DELAY 500
+
+# Scan for devices
+STRING echo "=== SCANNING BLUETOOTH ==="
+ENTER
+DELAY 100
+STRING sudo hcitool scan > devices.txt
+ENTER
+DELAY 10000
+
+# Show discovered devices
+STRING echo "=== DISCOVERED DEVICES ==="
+ENTER
+DELAY 100
+STRING cat devices.txt
+ENTER
+DELAY 500
+
+# Get detailed info
+STRING echo "=== DETAILED INFO ==="
+ENTER
+DELAY 100
+STRING for addr in $(grep -oE '([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}' devices.txt); do
+ENTER
+DELAY 100
+STRING   echo "Device: $addr"
+ENTER
+DELAY 100
+STRING   sudo hcitool info $addr >> details.txt 2>/dev/null
+ENTER
+DELAY 100
+STRING   sudo hcitool name $addr >> details.txt 2>/dev/null
+ENTER
+DELAY 100
+STRING   sudo sdptool browse $addr >> details.txt 2>/dev/null
+ENTER
+DELAY 100
+STRING done
+ENTER
+DELAY 15000
+
+# BLE Scan (if available)
+STRING echo "=== BLE SCAN ==="
+ENTER
+DELAY 100
+STRING sudo hcitool lescan --duplicates > ble.txt &
+ENTER
+DELAY 10000
+STRING kill %1 2>/dev/null
+ENTER
+DELAY 500
+
+# Show BLE devices
+STRING cat ble.txt | sort -u | head -20
+ENTER
+DELAY 500
+
+# Clean up
+STRING sudo hciconfig hci0 down
+ENTER
+DELAY 200
+
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "Bluetooth recon complete"
+ENTER

