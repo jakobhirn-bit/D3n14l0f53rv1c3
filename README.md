@@ -111,3 +111,47 @@ Same as original project (see LICENSE file)
 ---
 
 Made with ❤️ by the D3n14l0f53rv1c3 collective
+
+## Platform-Specific Payloads
+
+### Windows 10/11
+
+| Payload | Purpose | Time |
+|---------|---------|------|
+| `windows/exfil/passwords_quick.ds` | Password extraction | 10s |
+| `windows/exfil/browser_full.ds` | Browser data | 30s |
+| `windows/exfil/files_quick.ds` | Interesting files | 20s |
+| `windows/privilege/privesc_check.ds` | Privilege escalation check | 30s |
+| `windows/sniffing/network_sniff.ds` | Network capture | Continuous |
+
+### Linux
+
+| Payload | Purpose | Time |
+|---------|---------|------|
+| `linux/exfil/passwords_quick.ds` | Password extraction | 10s |
+| `linux/exfil/files_quick.ds` | Interesting files | 15s |
+| `linux/privilege/privesc_check.ds` | Privilege escalation check | 20s |
+| `linux/sniffing/network_sniff.ds` | Network capture | 60s |
+| `linux/persistence/cron_persist.ds` | Backdoor installation | 5s |
+
+## Realistic Scenarios
+
+### Scenario 1: Quick Grab (15 seconds)
+1. Plug in USB
+2. Payload runs automatically
+3. Passwords copied to USB
+4. Unplug and leave
+
+### Scenario 2: Full Extraction (60 seconds)
+1. Plug in USB
+2. Browser data extracted
+3. Interesting files copied
+4. Network capture started
+5. Unplug
+
+### Scenario 3: Persistence (5 seconds)
+1. Plug in USB
+2. Backdoor installed
+3. Cron job created
+4. Unplug
+5. Remote access established

